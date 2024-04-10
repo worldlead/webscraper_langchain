@@ -13,23 +13,11 @@ import { loadSummarizationChain, LLMChain } from "langchain/chains";
 export const getReplyFromGPT = async (req: Request, res: Response) => {
   try {
     const { question } = req.body;
-    console.log(question);
 
-    // const loader = new PuppeteerWebBaseLoader(question);
-    // const docs = await loader.load();
-    // const splitter = RecursiveCharacterTextSplitter.fromLanguage("html");
-    // const transformer = new HtmlToTextTransformer();
-
-    // const sequence = splitter.pipe(transformer);
-
-    // const newDocuments = await sequence.invoke(docs);
-    // console.log(newDocuments);
-
-    await summarize(question);
-    const answer = question;
+    const answer = await summarize(question);
     res.status(200).json({
       status: "success",
-      // answer,
+      answer,
     });
   } catch (error) {
     console.log(error)
@@ -82,5 +70,5 @@ export const summarize = async (url: string) => {
     input_documents: docs
   });
 
-  console.log(result);
+  return result.text.trim();
 };
