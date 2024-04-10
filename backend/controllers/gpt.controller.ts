@@ -56,7 +56,7 @@ export const summarize = async (url: string) => {
 
   // Generate prompt
   const prompt = new PromptTemplate({
-    template: `Please summarize the following text. \n\n---\n{text}\n---\n\nSummary:`,
+    template: `Please summarize the following content. This content is scraped from a web page. \n\n---\n{text}\n---\n\nSummary:`,
     inputVariables: ["text"],
   });
 

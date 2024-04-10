@@ -63,7 +63,7 @@ const NewSearch = () => {
     return (
         <>
             <div className="flex justify-between mr-10">
-                <h3>Chat with Agent</h3>
+                <h3>Search for Content</h3>
             </div>
             {errorMessage && (
                 <Alert showIcon className="mb-4" type="danger">
@@ -92,7 +92,7 @@ const NewSearch = () => {
                                             type="text"
                                             autoComplete="off"
                                             name="message"
-                                            placeholder="Type your message"
+                                            placeholder="Type URL"
                                             component={Input}
                                         />
                                         <Button
@@ -107,6 +107,7 @@ const NewSearch = () => {
                     )}
                 </Formik>
             </div>
+            <h3 className="mb-3">Summary</h3>
             <Card className="overflow-auto max-h-[400px] h-[400px]">
                 <div>
                   {reply}
