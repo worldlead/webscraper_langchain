@@ -64,7 +64,7 @@ const NewSearch = () => {
     return (
         <>
             <div className="flex justify-between mr-10">
-                <h3>Search for Content</h3>
+                <h3>Link</h3>
             </div>
             {errorMessage && (
                 <Alert showIcon className="mb-4" type="danger">
@@ -109,7 +109,7 @@ const NewSearch = () => {
                     )}
                 </Formik>
             </div>
-            <h3 className="mb-3">Summary</h3>
+            <h3 className="mb-3">Output</h3>
             <Card className="overflow-auto max-h-[400px] h-[400px]">
                 <div>
                   {reply}
