@@ -13,6 +13,7 @@ import { Alert, Card, InputGroup, Switcher } from '@/components/ui'
 import { HiArrowCircleRight } from 'react-icons/hi'
 import { AxiosError } from 'axios'
 import useTimeOutMessage from '@/utils/hooks/useTimeOutMessage'
+import CommonSpinner from '@/components/ui/Spinner/CommonSpinner'
 
 type FormModel = {
     message: string
@@ -80,8 +81,9 @@ const NewSearch = () => {
                         onSubmit(values, setSubmitting, resetForm)
                     }}
                 >
-                    {({ touched, errors, values }) => (
+                    {({ touched, errors, values, isSubmitting }) => (
                         <Form>
+                            <CommonSpinner isLoading={isSubmitting} />
                             <FormContainer>
                                 <FormItem
                                     invalid={errors.message && touched.message}
