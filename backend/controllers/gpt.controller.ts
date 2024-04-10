@@ -51,7 +51,6 @@ export const summarize = async (url: string) => {
   });
 
   const docs = await loader.loadAndSplit();
-  console.log(docs);
   const model = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY, temperature: 0, modelName: "gpt-3.5-turbo" });
 
   // Generate prompt
