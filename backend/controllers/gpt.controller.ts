@@ -6,7 +6,7 @@ import { encoding_for_model } from "@dqbd/tiktoken";
 import { PuppeteerWebBaseLoader } from "langchain/document_loaders/web/puppeteer";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { HtmlToTextTransformer } from "@langchain/community/document_transformers/html_to_text";
-import { PromptTemplate } from "langchain/prompts";
+import { PromptTemplate } from "@langchain/core/prompts";
 import { OpenAI } from "@langchain/openai";
 import { loadSummarizationChain, LLMChain } from "langchain/chains";
 
@@ -62,7 +62,7 @@ export const summarize = async (url: string) => {
   });
 
   const docs = await loader.loadAndSplit();
-  
+  console.log(docs);
   const model = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY, temperature: 0, modelName: "gpt-3.5-turbo" });
 
   // Generate prompt

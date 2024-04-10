@@ -9,7 +9,7 @@ export type AppConfig = {
 }
 
 const appConfig: AppConfig = {
-    apiPrefix: import.meta.env.VITE_BASE_URL as string,
+    apiPrefix: import.meta.env.VITE_BASE_URL ?  import.meta.env.VITE_BASE_URL as string : "http://localhost:5000/api/v1",
     authenticatedEntryPath: '/home/new-search',
     unAuthenticatedEntryPath: '/sign-in',
     tourPath: '/',
