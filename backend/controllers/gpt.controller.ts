@@ -1,4 +1,5 @@
 require("dotenv").config();
+import OpenAI from "openai";
 import { Request, Response, NextFunction } from "express";
 import sendError from "./assets/error.controller";
 import { getMyId } from "./user.controller";
@@ -7,8 +8,26 @@ import { PuppeteerWebBaseLoader } from "langchain/document_loaders/web/puppeteer
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { HtmlToTextTransformer } from "@langchain/community/document_transformers/html_to_text";
 import { PromptTemplate } from "@langchain/core/prompts";
-import { OpenAI } from "@langchain/openai";
+
 import { loadSummarizationChain, LLMChain } from "langchain/chains";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+
+export const createGeneralReply = async (message: string) => {
+  try {
+    const completion = await openai.chat.completions.create({
+      messages: [{ role: "user", content: message }],
+      model: "gpt-4",
+    });
+    const content = completion.choices[0].message.content;
+    return content;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const getReplyFromGPT = async (req: Request, res: Response) => {
   try {
@@ -50,24 +69,42 @@ export const summarize = async (url: string) => {
     },
   });
 
-  const docs = await loader.loadAndSplit();
-  const model = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY, temperature: 0, modelName: "gpt-3.5-turbo" });
+  const docs = await loader.load();
+  // const model = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY, temperature: 0, modelName: "gpt-3.5-turbo" });
 
-  // Generate prompt
-  const prompt = new PromptTemplate({
-    template: `Please summarize the following content. This content is scraped from a web page. \n\n---\n{text}\n---\n\nSummary:`,
-    inputVariables: ["text"],
-  });
+  // // Generate prompt
+  // const prompt = new PromptTemplate({
+  //   template: `Please summarize the following content and avoid the boiler plate information. This content is scraped from a web page. \n\n---\n{text}\n---\n\nSummary:`,
+  //   inputVariables: ["text"],
+  // });
 
-  const chain = loadSummarizationChain(model, {
-    combineMapPrompt: prompt,
-    combinePrompt: prompt,
-    type: "map_reduce",
-  });
+  // const chain = loadSummarizationChain(model, {
+  //   combineMapPrompt: prompt,
+  //   combinePrompt: prompt,
+  //   type: "map_reduce",
+  // });
 
-  const result = await chain.invoke({
-    input_documents: docs
-  });
+  // const result = await chain.invoke({
+  //   input_documents: docs
+  // });
 
-  return result.text.trim();
+  // return result.text.trim();
+
+  const splitter = RecursiveCharacterTextSplitter.fromLanguage("html");
+  const transformer = new HtmlToTextTransformer();
+  
+  const sequence = splitter.pipe(transformer);
+  
+  const newDocuments = await sequence.invoke(docs);
+  
+  
+  let wholeDocument = "";
+  for (let i = 0; i < newDocuments.length; i++) {
+    const doc = newDocuments[i];
+    wholeDocument += doc.pageContent;
+  }
+  
+  const message = "Summarize this and avoid the boiler plate info: " + wholeDocument;
+  const answer = await createGeneralReply(message);
+  return answer;
 };
