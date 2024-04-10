@@ -29,9 +29,10 @@ export const getReplyFromGPT = async (req: Request, res: Response) => {
     const answer = question;
     res.status(200).json({
       status: "success",
-      answer,
+      // answer,
     });
   } catch (error) {
+    console.log(error)
     sendError(error, 400, req, res);
   }
 };
